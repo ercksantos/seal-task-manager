@@ -5,16 +5,17 @@ interface StatsCardsProps {
   total: number;
   inProgress: number;
   completed: number;
+  isManager?: boolean;
 }
 
-export function StatsCards({ total, inProgress, completed }: StatsCardsProps) {
+export function StatsCards({ total, inProgress, completed, isManager = false }: StatsCardsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div className="stat-card stat-card-blue animate-fade-in">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Minhas Tarefas
+              {isManager ? 'Total de Tarefas' : 'Minhas Tarefas'}
             </p>
             <p className="mt-1 text-3xl font-bold text-foreground">{total}</p>
           </div>
