@@ -7,9 +7,11 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { StatsCards } from '@/components/dashboard/StatsCards';
 import { TaskList } from '@/components/dashboard/TaskList';
 import { NewTaskModal } from '@/components/dashboard/NewTaskModal';
+import Settings from './Settings';
 import { Loader2 } from 'lucide-react';
 
 function DashboardHome() {
+  const { isManager } = useAuth();
   const { tasks, loading, getTaskStats, refetch } = useTasks();
   const stats = getTaskStats();
 
@@ -18,7 +20,9 @@ function DashboardHome() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground mt-1">
-          Visão geral das suas tarefas e atividades
+          {isManager
+            ? 'Visão geral de todas as tarefas do sistema'
+            : 'Visão geral das suas tarefas e atividades'}
         </p>
       </div>
 
@@ -26,6 +30,7 @@ function DashboardHome() {
         total={stats.total}
         inProgress={stats.inProgress}
         completed={stats.completed}
+        isManager={isManager}
       />
 
       <div>
@@ -66,8 +71,29 @@ function MyTasks() {
 }
 
 function DepartmentTasks() {
-  const { profile } = useAuth();
+  const { profile, isManager } = useAuth();
   const { tasks, loading, refetch } = useTasks();
+
+  // Gestores não têm setor específico
+  if (isManager) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Tarefas por Setor</h1>
+          <p className="text-muted-foreground mt-1">
+            Como gestor, você pode ver todas as tarefas na visão geral
+          </p>
+        </div>
+
+        <TaskList
+          tasks={tasks}
+          loading={loading}
+          filterType="all-tasks"
+          onTaskUpdate={refetch}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -112,7 +138,9 @@ function Profile() {
           </div>
           <div>
             <label className="text-sm font-medium text-muted-foreground">Setor</label>
-            <p className="text-foreground">{profile?.department}</p>
+            <p className="text-foreground">
+              {profile?.department ?? 'Todos os Setores'}
+            </p>
           </div>
           <div>
             <label className="text-sm font-medium text-muted-foreground">Função</label>
@@ -165,6 +193,7 @@ export default function Dashboard() {
               <Route path="my-tasks" element={<MyTasks />} />
               <Route path="department-tasks" element={<DepartmentTasks />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="settings" element={<Settings />} />
             </Routes>
           </div>
         </main>

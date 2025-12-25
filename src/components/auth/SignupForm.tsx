@@ -21,11 +21,20 @@ const signupSchema = z.object({
   email: z.string().email('Email inválido').max(255),
   password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
   confirm_password: z.string(),
-  department: z.string().min(1, 'Selecione um setor'),
+  department: z.string().optional(),
   role: z.enum(['Manager', 'Member']),
 }).refine((data) => data.password === data.confirm_password, {
   message: 'As senhas não coincidem',
   path: ['confirm_password'],
+}).refine((data) => {
+  // Se for Member, department é obrigatório
+  if (data.role === 'Member') {
+    return data.department && data.department.length > 0;
+  }
+  return true;
+}, {
+  message: 'Selecione um setor',
+  path: ['department'],
 });
 
 export function SignupForm() {
@@ -49,7 +58,14 @@ export function SignupForm() {
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+      // Se mudar para Manager, limpar o department
+      if (name === 'role' && value === 'Manager') {
+        newData.department = '';
+      }
+      return newData;
+    });
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -63,7 +79,7 @@ export function SignupForm() {
 
       const { error } = await signUp(validatedData.email, validatedData.password, {
         full_name: validatedData.full_name,
-        department: validatedData.department,
+        department: validatedData.role === 'Manager' ? null : validatedData.department,
         role: validatedData.role,
       });
 
@@ -88,7 +104,7 @@ export function SignupForm() {
         title: 'Conta criada!',
         description: 'Sua conta foi criada com sucesso.',
       });
-      
+
       navigate('/dashboard');
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -197,7 +213,33 @@ export function SignupForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-foreground">
+          Função
+        </Label>
+        <div className="relative">
+          <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
+          <Select
+            value={formData.role}
+            onValueChange={(value) => handleSelectChange('role', value)}
+            disabled={loading}
+          >
+            <SelectTrigger className="pl-10">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Manager">Gestor</SelectItem>
+              <SelectItem value="Member">Colaborador</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {errors.role && (
+          <p className="text-xs text-destructive">{errors.role}</p>
+        )}
+      </div>
+
+      {/* Campo de setor - apenas para Colaboradores */}
+      {formData.role === 'Member' && (
         <div className="space-y-2">
           <Label className="text-sm font-medium text-foreground">
             Setor
@@ -210,7 +252,7 @@ export function SignupForm() {
               disabled={loading}
             >
               <SelectTrigger className="pl-10">
-                <SelectValue placeholder="Selecione" />
+                <SelectValue placeholder="Selecione seu setor" />
               </SelectTrigger>
               <SelectContent>
                 {DEPARTMENTS.map((dept) => (
@@ -225,32 +267,18 @@ export function SignupForm() {
             <p className="text-xs text-destructive">{errors.department}</p>
           )}
         </div>
+      )}
 
-        <div className="space-y-2">
-          <Label className="text-sm font-medium text-foreground">
-            Função
-          </Label>
-          <div className="relative">
-            <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
-            <Select
-              value={formData.role}
-              onValueChange={(value) => handleSelectChange('role', value)}
-              disabled={loading}
-            >
-              <SelectTrigger className="pl-10">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Manager">Gestor</SelectItem>
-                <SelectItem value="Member">Colaborador</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {errors.role && (
-            <p className="text-xs text-destructive">{errors.role}</p>
-          )}
+      {/* Mensagem informativa para Gestores */}
+      {formData.role === 'Manager' && (
+        <div className="rounded-lg bg-primary/10 border border-primary/20 p-3">
+          <p className="text-sm text-primary">
+            <Shield className="inline-block h-4 w-4 mr-1.5 -mt-0.5" />
+            Como Gestor, você poderá gerenciar tarefas de todos os setores e atribuir tarefas a colaboradores e outros gestores.
+          </p>
         </div>
-      </div>
+      )}
+
 
       <Button
         type="submit"

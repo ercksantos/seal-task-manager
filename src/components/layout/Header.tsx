@@ -23,7 +23,7 @@ export function Header({ onMenuClick, onNewTask }: HeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          
+
           <div className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <ClipboardList className="h-5 w-5 text-primary-foreground" />
@@ -40,7 +40,7 @@ export function Header({ onMenuClick, onNewTask }: HeaderProps) {
           </span>
           <span className="hidden md:inline text-border">•</span>
           <span className="hidden md:inline text-primary font-medium">
-            {profile?.department}
+            {profile?.department ?? 'Gestor'}
           </span>
         </div>
 
@@ -51,7 +51,7 @@ export function Header({ onMenuClick, onNewTask }: HeaderProps) {
               Nova Tarefa
             </Button>
           )}
-          
+
           <Button
             variant="ghost"
             size="icon"

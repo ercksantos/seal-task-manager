@@ -42,7 +42,7 @@ export function NewTaskModal({ open, onClose, onSuccess }: NewTaskModalProps) {
   const { createTask } = useTasks();
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<Profile[]>([]);
-  
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [deadline, setDeadline] = useState<Date>();
@@ -58,7 +58,7 @@ export function NewTaskModal({ open, onClose, onSuccess }: NewTaskModalProps) {
         .from('profiles')
         .select('*')
         .order('full_name');
-      
+
       if (data) {
         setUsers(data as Profile[]);
       }
@@ -177,7 +177,7 @@ export function NewTaskModal({ open, onClose, onSuccess }: NewTaskModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={() => !loading && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Nova Tarefa</DialogTitle>
         </DialogHeader>
@@ -278,7 +278,7 @@ export function NewTaskModal({ open, onClose, onSuccess }: NewTaskModalProps) {
                 <SelectContent>
                   {users.map((user) => (
                     <SelectItem key={user.id} value={user.id}>
-                      {user.full_name} ({user.department})
+                      {user.full_name} ({user.department ?? 'Gestor'})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -349,16 +349,17 @@ export function NewTaskModal({ open, onClose, onSuccess }: NewTaskModalProps) {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-border">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={loading}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
-            <Button type="submit" className="btn-primary" disabled={loading}>
+            <Button type="submit" className="btn-primary w-full sm:w-auto" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />

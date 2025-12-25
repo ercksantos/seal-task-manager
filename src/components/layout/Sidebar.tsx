@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { LayoutDashboard, User, Users, Settings, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
 interface SidebarProps {
@@ -11,16 +13,36 @@ interface SidebarProps {
   onNewTask?: () => void;
 }
 
-const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/dashboard/my-tasks', icon: User, label: 'Minhas Tarefas' },
-  { to: '/dashboard/department-tasks', icon: Users, label: 'Tarefas do Setor' },
-  { to: '/dashboard/profile', icon: Settings, label: 'Perfil' },
-];
-
 export function Sidebar({ isOpen, onClose, onNewTask }: SidebarProps) {
   const location = useLocation();
-  const { isManager } = useAuth();
+  const { isManager, profile } = useAuth();
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getAvatarUrl = (path: string | null) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  // Items de navegação dinâmicos baseados no role
+  const navItems = [
+    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/dashboard/my-tasks', icon: User, label: 'Minhas Tarefas' },
+    // Colaboradores veem "Tarefas do Setor", gestores não (já veem tudo no Dashboard)
+    ...(!isManager && profile?.department ? [
+      { to: '/dashboard/department-tasks', icon: Users, label: `Tarefas - ${profile.department}` }
+    ] : []),
+    { to: '/dashboard/settings', icon: Settings, label: 'Configurações' },
+  ];
 
   return (
     <>
@@ -46,6 +68,26 @@ export function Sidebar({ isOpen, onClose, onNewTask }: SidebarProps) {
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
+          </div>
+
+          {/* Perfil do Usuário */}
+          <div className="border-b border-border p-4">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={getAvatarUrl(profile?.avatar_url || null) || undefined} alt={profile?.full_name} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                  {profile?.full_name ? getInitials(profile.full_name) : <User className="h-5 w-5" />}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-foreground text-sm truncate">
+                  {profile?.full_name || 'Usuário'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {isManager ? 'Gestor' : profile?.department || 'Colaborador'}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Navigation */}

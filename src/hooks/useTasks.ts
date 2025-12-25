@@ -182,13 +182,13 @@ export function useTasks() {
         const item = tasks
           .flatMap((t) => t.checklist_items || [])
           .find((i) => i.id === itemId);
-        
+
         if (item) {
           const task = tasks.find((t) => t.id === item.task_id);
           if (task) {
             const totalItems = task.checklist_items?.length || 0;
             const completedItems = (task.checklist_items?.filter((i) => i.is_completed).length || 0) + 1;
-            
+
             if (completedItems === totalItems) {
               toast({
                 title: 'Parabéns! 🎉',
@@ -238,16 +238,22 @@ export function useTasks() {
   };
 
   const getTaskStats = useCallback(() => {
-    const myTasks = tasks.filter(
-      (task) =>
-        task.assigned_to_user_id === user?.id ||
-        task.assigned_to_department === profile?.department
-    );
+    // Para gestores: mostrar estatísticas de todas as tarefas
+    // Para colaboradores: apenas tarefas atribuídas a eles ou ao departamento
+    const isManager = profile?.role === 'Manager';
+
+    const relevantTasks = isManager
+      ? tasks
+      : tasks.filter(
+        (task) =>
+          task.assigned_to_user_id === user?.id ||
+          (profile?.department && task.assigned_to_department === profile.department)
+      );
 
     return {
-      total: myTasks.length,
-      inProgress: myTasks.filter((t) => t.status === 'Em Andamento').length,
-      completed: myTasks.filter((t) => t.status === 'Concluída').length,
+      total: relevantTasks.length,
+      inProgress: relevantTasks.filter((t) => t.status === 'Em Andamento').length,
+      completed: relevantTasks.filter((t) => t.status === 'Concluída').length,
     };
   }, [tasks, user, profile]);
 

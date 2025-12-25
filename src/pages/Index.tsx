@@ -2,25 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { ClipboardList, ArrowRight, CheckCircle, Users, BarChart3 } from 'lucide-react';
-
-const features = [
-  {
-    icon: CheckCircle,
-    title: 'Checklists Interativos',
-    description: 'Acompanhe o progresso de cada tarefa com checklists detalhados.',
-  },
-  {
-    icon: Users,
-    title: 'Atribuição Flexível',
-    description: 'Atribua tarefas para usuários específicos ou setores inteiros.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Visão em Tempo Real',
-    description: 'Atualizações instantâneas do status e progresso das tarefas.',
-  },
-];
+import { ClipboardList, ArrowRight, LogIn, UserPlus } from 'lucide-react';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -33,7 +15,7 @@ export default function Index() {
   }, [user, loading, navigate]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -46,72 +28,86 @@ export default function Index() {
 
           <div className="flex items-center gap-3">
             <Link to="/login">
-              <Button variant="ghost">Entrar</Button>
+              <Button variant="ghost" size="sm">
+                <LogIn className="h-4 w-4 mr-2" />
+                Entrar
+              </Button>
             </Link>
             <Link to="/signup">
-              <Button className="btn-primary">
+              <Button size="sm" className="btn-primary">
+                <UserPlus className="h-4 w-4 mr-2" />
                 Criar Conta
-                <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground max-w-3xl mx-auto leading-tight animate-fade-in">
-            Gerencie as tarefas da{' '}
-            <span className="text-primary">Seal Store</span> com eficiência
-          </h1>
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Uma solução digital moderna para substituir papel e caneta. Organize, atribua e acompanhe todas as tarefas da sua equipe em um único lugar.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <Link to="/signup">
-              <Button size="lg" className="btn-primary text-base px-8">
-                Começar Agora
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button size="lg" variant="outline" className="text-base px-8">
-                Já tenho conta
-              </Button>
-            </Link>
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center py-12 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          {/* Logo grande */}
+          <div className="flex justify-center mb-8">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary shadow-lg">
+              <ClipboardList className="h-10 w-10 text-primary-foreground" />
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Features */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-12">
-            Por que usar o SealTask?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {features.map((feature, index) => (
-              <div
-                key={feature.title}
-                className="card-elevated p-6 text-center animate-slide-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mb-4">
-                  <feature.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Bem-vindo ao <span className="text-primary">SealTask</span>
+          </h1>
+
+          <p className="text-lg text-muted-foreground mb-8">
+            Sistema interno de gerenciamento de tarefas da Seal Store
+          </p>
+
+          {/* Botões de ação */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <Link to="/login">
+              <Button size="lg" className="btn-primary text-base px-8 w-full sm:w-auto">
+                <LogIn className="h-5 w-5 mr-2" />
+                Acessar Sistema
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button size="lg" variant="outline" className="text-base px-8 w-full sm:w-auto">
+                <UserPlus className="h-5 w-5 mr-2" />
+                Primeiro Acesso
+              </Button>
+            </Link>
+          </div>
+
+          {/* Instruções rápidas */}
+          <div className="bg-muted/50 rounded-xl p-6 text-left">
+            <h2 className="font-semibold text-foreground mb-4 text-center">
+              Como usar o SealTask
+            </h2>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">1</span>
+                <p><strong className="text-foreground">Primeiro acesso?</strong> Clique em "Primeiro Acesso" e cadastre-se com seu email corporativo, nome, setor e função.</p>
               </div>
-            ))}
+              <div className="flex gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">2</span>
+                <p><strong className="text-foreground">Gestores</strong> podem criar tarefas e atribuí-las para colaboradores específicos ou setores inteiros.</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">3</span>
+                <p><strong className="text-foreground">Colaboradores</strong> visualizam suas tarefas, marcam itens do checklist e atualizam o status.</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">4</span>
+                <p><strong className="text-foreground">Acompanhe em tempo real</strong> o progresso de todas as tarefas no Dashboard.</p>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </main>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-border">
+      <footer className="py-6 border-t border-border">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2024 SealTask - Sistema de Gerenciamento de Tarefas para Seal Store</p>
+          <p>© {new Date().getFullYear()} SealTask - Seal Store</p>
         </div>
       </footer>
     </div>
