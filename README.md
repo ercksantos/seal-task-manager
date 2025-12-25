@@ -1,73 +1,137 @@
-# Welcome to your Lovable project
+# 📋 SealTask
 
-## Project info
+<div align="center">
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![SealTask](https://img.shields.io/badge/SealTask-Sistema%20de%20Tarefas-0EA5E9?style=for-the-badge)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=flat-square&logo=supabase)
+![Tailwind](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=flat-square&logo=tailwindcss)
 
-## How can I edit this code?
+**Sistema interno de gerenciamento de tarefas da Seal Store**
 
-There are several ways of editing your application.
+</div>
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 📖 Sobre o Projeto
 
-Changes made via Lovable will be committed automatically to this repo.
+O **SealTask** é um sistema de gerenciamento de tarefas desenvolvido para uso interno da Seal Store. Ele substitui o uso de papel e caneta, permitindo que gestores criem e distribuam tarefas, enquanto colaboradores acompanham e atualizam o progresso de suas atividades em tempo real.
 
-**Use your preferred IDE**
+## ✨ Funcionalidades
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 👔 Para Gestores
+- ✅ Criar tarefas com título, descrição e prazo
+- ✅ Atribuir tarefas para colaboradores específicos ou setores inteiros
+- ✅ Adicionar checklists com até 20 itens por tarefa
+- ✅ Visualizar todas as tarefas de todos os setores
+- ✅ Excluir tarefas quando necessário
+- ✅ Acompanhar estatísticas gerais do sistema
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 👥 Para Colaboradores
+- ✅ Visualizar tarefas atribuídas diretamente ou ao seu setor
+- ✅ Marcar/desmarcar itens do checklist
+- ✅ Atualizar status das tarefas (Pendente → Em Andamento → Concluída)
+- ✅ Acompanhar progresso visual das tarefas
 
-Follow these steps:
+### 🔧 Recursos Gerais
+- 🔄 **Atualizações em tempo real** - Mudanças são sincronizadas instantaneamente
+- 📱 **Totalmente responsivo** - Funciona perfeitamente em celulares e tablets
+- 🖼️ **Foto de perfil** - Upload com crop circular para personalização
+- 🔍 **Filtros e busca** - Encontre tarefas rapidamente
+- 📊 **Dashboard com estatísticas** - Visão geral do progresso
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Tecnologias
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+| Tecnologia | Descrição |
+|------------|-----------|
+| **React 18** | Biblioteca para construção da interface |
+| **TypeScript** | Tipagem estática para maior segurança |
+| **Vite** | Build tool rápido e moderno |
+| **Tailwind CSS** | Framework CSS utilitário |
+| **shadcn/ui** | Componentes de UI elegantes |
+| **Supabase** | Backend as a Service (Auth, Database, Storage, Realtime) |
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🏗️ Estrutura do Banco de Dados
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐
+│  profiles   │     │    tasks    │     │ task_checklist_items│
+├─────────────┤     ├─────────────┤     ├─────────────────────┤
+│ id          │◄────│ created_by  │     │ id                  │
+│ full_name   │     │ assigned_to │     │ task_id             │────►
+│ email       │     │ title       │     │ description         │
+│ department  │     │ description │     │ is_completed        │
+│ role        │     │ deadline    │     │ item_order          │
+│ avatar_url  │     │ status      │     └─────────────────────┘
+└─────────────┘     └─────────────┘
+```
+
+## 🚀 Como Executar Localmente
+
+```bash
+# Clone o repositório
+git clone <url-do-repositorio>
+
+# Entre na pasta do projeto
+cd seal-task-manager
+
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+O projeto estará disponível em `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📋 Variáveis de Ambiente
 
-**Use GitHub Codespaces**
+O projeto utiliza Supabase. As variáveis já estão configuradas no cliente:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```env
+VITE_SUPABASE_URL=<sua-url-do-supabase>
+VITE_SUPABASE_ANON_KEY=<sua-chave-anonima>
+```
 
-## What technologies are used for this project?
+## 👥 Tipos de Usuário
 
-This project is built with:
+| Tipo | Permissões |
+|------|------------|
+| **Gestor (Manager)** | Criar, editar, excluir tarefas. Ver todas as tarefas. Atribuir para qualquer usuário ou setor. |
+| **Colaborador (Member)** | Ver tarefas atribuídas a si ou ao seu setor. Atualizar status e marcar checklist. |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📱 Screenshots
 
-## How can I deploy this project?
+<details>
+<summary>Ver screenshots</summary>
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Dashboard
+- Visualização de estatísticas
+- Lista de tarefas com filtros
+- Cards expandíveis com detalhes
 
-## Can I connect a custom domain to my Lovable project?
+### Criação de Tarefa
+- Formulário intuitivo
+- Seleção de atribuição
+- Checklist dinâmico
 
-Yes, you can!
+### Perfil
+- Upload de foto com crop
+- Informações do usuário
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+</details>
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 Licença
+
+Este projeto é de uso interno da **Seal Store**.
+
+---
+
+<div align="center">
+
+Desenvolvido com 💙 para a **Seal Store**
+
+© 2025 SealTask
+
+</div>
